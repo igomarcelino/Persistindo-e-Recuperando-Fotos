@@ -2,9 +2,8 @@ package org.example.apresentacao;
 
 import org.example.DAO.FotoDAO;
 import org.example.dados.Conexao;
-import org.example.utilitarios.imagens.ConverterFotoParaArray;
+import org.example.utilitarios.classes.ConverterFotoParaArray;
 
-import javax.accessibility.AccessibleRelation;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -44,10 +43,7 @@ public class Tela extends JFrame {
         labelImagem.setIcon(adicionarImagemPadrao());
         getContentPane().add(labelImagem);
 
-        labelFotoBanco = new JLabel();
-        labelFotoBanco.setBounds(440,30,270,200);
-        labelFotoBanco.setIcon(adicionarImagemPadrao());
-        getContentPane().add(labelFotoBanco);
+
 
         labelNomeFoto = new JLabel("Nome da foto: ");
         labelNomeFoto.setBounds(83,250,150,25);
@@ -58,9 +54,6 @@ public class Tela extends JFrame {
         textNomeFoto.setBounds(190,250,150,25);
         getContentPane().add(textNomeFoto);
 
-        textIdFotoBanco = new JTextField();
-        textIdFotoBanco.setBounds(440,250,100,25);
-        getContentPane().add(textIdFotoBanco);
     }
 
 
@@ -76,9 +69,10 @@ public class Tela extends JFrame {
         procurarFoto.addActionListener(selecionarFoto());
         getContentPane().add(procurarFoto);
 
-        btnBuscaFotoBanco = new JButton("Buscar");
+        btnBuscaFotoBanco = new JButton("Album");
+        btnBuscaFotoBanco.setFont(new Font("Arial", Font.BOLD, 14));
         btnBuscaFotoBanco.setBounds(440,300,90,30);
-        btnBuscaFotoBanco.addActionListener(buscarFotoBanco());
+        btnBuscaFotoBanco.addActionListener(mostrarAlbum());
         getContentPane().add(btnBuscaFotoBanco);
     }
 
@@ -88,6 +82,8 @@ public class Tela extends JFrame {
 
         return iconPadrao;
     }
+
+
 
     // Listener para selecionar a foto a salvar
     private ActionListener selecionarFoto(){
@@ -99,7 +95,7 @@ public class Tela extends JFrame {
                 if (opcao == JFileChooser.APPROVE_OPTION){
                     File novaFoto = jFileChooser.getSelectedFile();
                     String caminho = novaFoto.getAbsolutePath();
-                    Image fotoParaSalvar = new ImageIcon(caminho).getImage().getScaledInstance(200,200,Image.SCALE_SMOOTH);
+                    Image fotoParaSalvar = renderizadorDeFotos(caminho);
                     guardaFoto = new ImageIcon(fotoParaSalvar);
 
                     labelImagem.setIcon(guardaFoto);
@@ -137,6 +133,25 @@ public class Tela extends JFrame {
 
             }
         };
+    }
+
+    private ActionListener mostrarAlbum(){
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               Album album = new Album();
+                album.setVisible(true);
+
+
+            }
+        };
+    }
+
+    /**
+     * Renderizador de imagens
+     * */
+    public Image renderizadorDeFotos(String imagePath){
+        return new ImageIcon(imagePath).getImage().getScaledInstance(400,400,Image.SCALE_SMOOTH);
     }
 
 }

@@ -1,6 +1,7 @@
 package org.example.DAO;
 
-import org.example.utilitarios.imagens.ConverterArrayParaFoto;
+import org.example.dominio.Foto;
+import org.example.utilitarios.classes.ConverterArrayParaFoto;
 
 import javax.sql.rowset.serial.SerialException;
 import javax.swing.*;
@@ -9,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FotoDAO {
     private Connection connection;
@@ -22,6 +25,7 @@ public class FotoDAO {
             """;
 
     private static String procurarFotoPeloID="SELECT *FROM FOTOS WHERE ID = ? ";
+    private static String procurarTodasFotos="SELECT *FROM FOTOS;";
 
     public void setInserirFoto(String nome, byte[] bytes){
 
@@ -55,5 +59,22 @@ public class FotoDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<Foto> albumFoto(){
+        List<Foto> album = new ArrayList<>();
+
+        try(PreparedStatement selectAll = connection.prepareStatement(procurarTodasFotos)){
+            ResultSet resultSet = selectAll.executeQuery();
+            while (resultSet.next()){
+                Foto foto = new Foto();
+                foto.setNome(resultSet.getString("nome"));
+                foto.setBytes(resultSet.getBytes("imagem"));
+                album.add(foto);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return album;
     }
 }
